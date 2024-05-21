@@ -1,22 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <script src="https://code.jquery.com/jquery-latest.js"></script>
+<link rel="stylesheet" href="./bootstrapt/css/bootstrap.min.css" />
+<script src="./bootstrapt/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
     $(document).ready(function(){
-
+        $("#srchIdBtn").click(function(){
+            location.href="/member/srchPage?n="+1;
+        });
+        $("#srchPwdBtn").click(function(){
+            location.href="/member/srchPage?n="+2;
+        });
+        $("#rBtn").click(function(){
+            location.href="/member/regi";
+        });
     });
 
 </script>
 <div th:replace="~{/fragments/head :: headFragment}"></div>
+<style>
+    #login {
+        text-align: center;
+    }
+    .main-container {
+
+    }
+    label {
+        width: 100px;
+        display: inline-block;
+    }
+    #btn {
+        margin-top: 40px;
+        text-align: center;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<h3>메인 페이지</h3>
-<div>
-
-</div>
-
+<form name="login" id="login" method="post">
+    <h3>이곳은 비공개 게시판입니다.</h3>
+    <div class="main-container">
+        <div>
+            <label for="userId">아이디 : </label>
+                <input type="text" name="userId" id="userId">
+        </div>
+        <br>
+        <div>
+            <label for="userPwd">비밀번호 : </label>
+                <input type="text" name="userPwd" id="userPwd">
+        </div>
+        <br>
+        <div>
+            <input type="submit" value="로그인하기">
+        </div>
+    </div>
+</form>
+    <div id="btn">
+        아이디가 기억나지 않으세요?
+        <input type="button" name="srchIdBtn" id="srchIdBtn" value="아이디 찾기"> <p>
+        비밀번호가 기억나지 않으세요??
+        <input type="button" name="srchPwdBtn" id="srchPwdBtn" value="비밀번호 찾기">
+        <p>
+        <input type="button" name="regi" id="rBtn" value="회원가입">
+    </div>
 </body>
 </html>

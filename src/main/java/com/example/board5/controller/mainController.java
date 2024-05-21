@@ -15,4 +15,9 @@ public class mainController {
     public String main() {
         return "/main";
     }
+
+    @GetMapping("/modal")
+    public String modal() {
+        return "/modal";
+    }
 }

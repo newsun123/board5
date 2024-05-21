@@ -29,16 +29,22 @@
         function errorAlert(msg) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Warning!',
-                text: 'warning!',
-                footer: msg+'!'
+                title: msg+'!',
+                text: '',
+            });
+        }
+
+        function succesAlert(msg) {
+            Swal.fire({
+                icon: 'success',
+                title: msg
             });
         }
     </script>
     <body>
     <div th:fragment="common1" id="container">
         <div class="item">
-            asss
+
         </div>
         <div class="item">
             <h1>게시판</h1>
@@ -48,7 +54,7 @@
             <button name="logout" id="logoutBtn">logout</button>
         </div>
         <div class="item" th:if="${session.userId}==null">
-            dasdf
+
         </div>
 
     </div>
