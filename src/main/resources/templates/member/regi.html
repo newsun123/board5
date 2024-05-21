@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<div th:replace="~{/fragments/head :: headFragment}"></div>
+<script src="https://code.jquery.com/jquery-latest.js"></script>
+<script>
+    let cntChkId= 0;
+    let cntChkNm= 0;
+    $(document).ready(function(){
+        $("#chkId").click(function(){
+           chkId();
+        });
+        $("#chkNm").click(function(){
+            chkNm();
+        })
+    });
+
+    function chkId() {
+        let userId = $("#userId").val().trim();
+
+        if(userId===""){
+            errorAlert("아이디를 적어주세요");
+        }else {
+            $.ajax({
+                url: "/member/chkId",
+               method: 'GET',
+               data: {
+                   userId : userId
+               },
+                dataType: 'json',
+                success : function(data) {
+                    if(data===0){
+                        cntChkId = 1;
+                        succesAlert("사용 가능한 아이디입니다.");
+                    }else{
+                        cntChkId = 0;
+                        errorAlert("사용 불가능한 아이디입니다.");
+                    }
+                }
+            });
+        }
+    }
+
+    function chkNm() {
+        let userNm = $("#userNm").val().trim();
+        if(userNm==="") {
+            errorAlert("닉네임을 적어주세요!");
+        }else {
+            $.ajax({
+                url: "/member/chkNm",
+                method: "GET",
+                data: {
+                    userNm : userNm
+                },
+                success: function(result){
+                    if(result===0){
+                        cntChkNm = 1;
+                        succesAlert("사용가능한 닉네임입니다.");
+                    }else {
+                        cntChkNm = 0;
+                        errorAlert("사용 불가능한 닉네임입니다.");
+                    }
+                }
+            })
+        }
+    }
+
+    function check() {
+        let userId = $("#userId").val().trim();
+        let userPwd = $("#userPwd").val().trim();
+        let userNm = $("#userNm").val().trim();
+        let userEmail = $("#userEmail").val().trim();
+        let userSexual = $("input[name=userSex]:checked").val();
+        let userPwdHint = $("input[name=userPwdHint]:checked").val();
+        let userHintAnswer = $("#userHintAnswer").val().trim();
+        if(cntChkId===0){
+            errorAlert("아이디 중복확인을 해주세요");
+            return false;
+        }else if(userId==="") {
+            errorAlert("아이디를 적어주세요");
+            return false;
+        }else if(userPwd==="") {
+            errorAlert("비밀번호를 적어주세요");
+            return false;
+        }else if(cntChkNm===0) {
+            errorAlert("닉네임 중복확인을 해주세요");
+            return false;
+        }else if(userNm===""){
+            errorAlert("닉네임을 적어주세요");
+            return false;
+        }else if(userSex===undefined) {
+            errorAlert("성별을 체크해주세요");
+            return false;
+        }else if(userPwdHint==="") {
+            errorAlert("비밀번호 힌트를 체크해주세요");
+            return false;
+        }else if(userHintAnswer==="") {
+            errorAlert("힌트 정답을 적어주세요");
+            return false;
+        }
+        return true;
+    }
+
+    function chkPwd() {
+        let pwd = $("#userPwd").val().trim();
+        let sc = /[~,!,@,#,$,%,^,&,*,-,_,=,+,?,<,>]/;
+        let alphabet = /[a-zA-Z]/;
+        if(pwd.length < 7) {
+            $("#pwdAlert").empty();
+            $("#pwdAlert").text("최소 8자리가 되어야 합니다.").css('color','red');
+        }else{
+            if(pwd.match(sc) && pwd.match(alphabet)) {
+                $("#pwdAlert").empty();
+                $("#pwdAlert").text("강력한 비밀번호입니다.").css('color','blue');
+            }else{
+                $("#pwdAlert").empty();
+                $("#pwdAlert").text("대문자와 특수기호를 넣어주세요.").css('color','red');
+            }
+        }
+    }
+
+    function chkRePwd() {
+        let pwd = $("#userPwd").val().trim();
+        let pwd2 = $("#userPwd2").val().trim();
+
+        if(pwd!==pwd2) {
+            $("#pwdMsg").text("비밀번호가 다릅니다.").css('color','red').css('font-size','10px');
+        }else{
+            $("#pwdMsg").text("비밀번호가 같습니다.").css('color','blue').css('font-size','10px');
+        }
+    }
+</script>
+<style>
+    form {
+        text-align: center;
+        width: 100%;
+    }
+    .regi-label {
+        width: 120px;
+        display: inline-block;
+        margin-bottom: 10px;
+        text-align: right;
+    }
+    .input-case {
+        width: 200px;
+        margin-left: 10px;
+    }
+</style>
+<body>
+<form name="regi" id="regi" action="/member/regiOk" onsubmit="return check()">
+    <h3>회원 가입</h3>
+    <div>
+        <label class="regi-label" for="userId">아이디 : </label>
+        <span class="input-case"><input type="text" name="userId" id="userId"></span>
+        <button id="chkId">중복확인</button>
+    </div>
+    <div>
+        <label class="regi-label" for="userPwd">비밀번호 : </label>
+        <span class="input-case"><input type="password" name="userPwd" id="userPwd" onkeyup="chkPwd()"></span><br>
+        <span id="pwdAlert"> 비밀번호는 최소 8자리, 대문자 및 특수문자 1개씩 필요합니다.</span>
+    </div><br>
+    <div>
+        <label class="regi-label" for="userPwd2">비밀번호 확인 : </label>
+        <span class="input-case">
+            <input type="password" name="userPw" id="userPwd2" onkeyup="chkRePwd()">
+            <span id="pwdMsg"></span>
+        </span>
+    </div>
+    <div>
+        <label class="regi-label" for="userNm">닉네임 : </label>
+       <span class="input-case"><input type="text" name="userNm" id="userNm"></span>
+        <button id="chkNm">중복확인</button>
+    </div>
+    <div>
+        <label class="regi-label" for="userEmail">이메일 : </label>
+        <span class="input-case"><input type="email" name="userEmail" id="userEmail"></span>
+    </div>
+    <div>
+        <label class="regi-label">성별 : </label>
+        <span class="input-case">
+            <label><input type="radio" name="userSex" class="userSex" value="0">남자</label>
+            <label><input type="radio" name="userSex" class="userSex" value="1">여자</label>
+            <label><input type="radio" name="userSex" class="userSex" value="2">비밀</label>
+        </span>
+    </div>
+    <div>
+        <label class="regi-label" for="userPwdHint">비밀번호 힌트 : </label>
+            <select id="userPwdHint" name="userPwdHint" style="width:140px">
+                <option value="0" class="userPwdHint" checked>~?</option>
+                <option value="1" class="userPwdHint">!!?</option>
+                <option value="2" class="userPwdHint">!!@#!?</option>
+            </select>
+    </div>
+    <div>
+        <label class="regi-label" for="userHintAnswer">힌트 정답 : </label>
+        <span class="input-case"><Input type="text" name="userHintAnswer" id="userHintAnswer"></span>
+    </div>
+    <div>
+        <input type="submit" value="회원가입">
+    </div>
+</form>
+</body>
+</html>

@@ -21,7 +21,13 @@ public class memberRestController {
     public @ResponseBody int chkId(String userId){
         int result;
         result = service.chkId(userId);
-        log.info("asdfasdfasdf = {}" , result);
+        return result;
+    }
+
+    @RequestMapping(value="/member/chkNm", method = RequestMethod.GET)
+    public @ResponseBody int chkNm(String userNm){
+        int result;
+        result = service.chkNm(userNm);
         return result;
     }
 }
